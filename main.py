@@ -2,37 +2,31 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel
 
 
-
 class MW(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Главное меню")
+        self.setWindowTitle("Боггл")
         self.resize(1000, 450)
 
+        self.start_button = QPushButton("Начало игры")
+        self.start_button.clicked.connect(self.open_Wgame)
 
-        self.start_button=QPushButton("Начало игры")
-        self.start_button.clicked.connect(self.start_game)
+        self.rules_button = QPushButton("Правила")
+        self.rules_button.clicked.connect(self.open_Rules)
 
+        self.sound_button = QPushButton("Звук")
+        self.sound_button.clicked.connect(self.open_Sounds)
 
-        self.rules_button=QPushButton("Правила")
-        self.rules_button.clicked.connect(self.show_rules)
-
-
-        self.sound_button=QPushButton("Звук")
-        self.sound_button.clicked.connect(self.show_sound_options)
-
-
-        self.exit_button=QPushButton("Выход")
-        self.exit_button.clicked.connect(self.close)
+        self.quit_button = QPushButton("Выход")
+        self.quit_button.clicked.connect(self.close)
 
 
-        # Создаем вертикальный layout и добавляем кнопки
-        layout=QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.start_button)
         layout.addWidget(self.rules_button)
         layout.addWidget(self.sound_button)
-        layout.addWidget(self.exit_button)
+        layout.addWidget(self.quit_button)
 
 
         # Создаем виджет, устанавливаем layout и устанавливаем виджет как основной виджет главного окна
@@ -40,23 +34,45 @@ class MW(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
+    def open_Wgame(self):
+        self.game_window = Wgame()
+        self.game_window.show()
+        self.close()
 
 
-    def start_game(self):
-        print("Начало игры")
+    def open_Rules(self):
+        self.rule_window = Rules()
+        self.rule_window.show()
+        self.close()
+
+    def open_Sounds(self):
+        self.sound_window = Sounds()
+        self.sound_window.show()
+        self.close()
+
+class Wgame(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Боггл")
+        self.resize(1000, 450)
 
 
-    def show_rules(self):
-        print("Правила")
+class Rules(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Правила")
+        self.resize(1000, 450)
+        label = QLabel("...", self)
+        label.move(500, 200)
+class Sounds(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Звук")
+        self.resize(1000, 450)
 
 
-    def show_sound_options(self):
-        print("Звук")
-
-
-
-if __name__=="__main__":
-    app=QApplication(sys.argv)
-    menu=MW()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    menu = MW()
     menu.show()
     sys.exit(app.exec())
