@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QLabel
+from PyQt5.QtMultimedia import QSound
 
 
 class MW(QMainWindow):
@@ -29,8 +30,7 @@ class MW(QMainWindow):
         layout.addWidget(self.quit_button)
 
 
-        # Создаем виджет, устанавливаем layout и устанавливаем виджет как основной виджет главного окна
-        widget=QWidget()
+        widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
@@ -56,19 +56,27 @@ class Wgame(QWidget):
         self.setWindowTitle("Боггл")
         self.resize(1000, 450)
 
+        self.podskazka = QPushButton("Подсказать", self)
+        #self.podskazka.clicked.connect дописать то что будет происходить
 
 class Rules(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Правила")
         self.resize(1000, 450)
-        label = QLabel("...", self)
-        label.move(500, 200)
+        label6 = QLabel("Правила игры:\n1. Есть только 1 режим игры.\n2. В начале выводится матрица 4*4, заполненная буквами русского алфавита.\n3. Пользователь должен вписывать в поле ответа слово, состоящее из букв, которые есть в матрице.\n4. Очки зависят от длины и количества слов. За каждую букву начисляется 1 очко.\n5. В игре есть кнопка подсказки слова, при нажатии на которую пользователю выводится подходящее слово.\nОчки за такое слово начисляются с коэффициентом 0,5, кнопка будет доступна 3 раза за 1 игру",self)
+        label6.move(250, 100)
+
 class Sounds(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Звук")
         self.resize(1000, 450)
+
+        self.sound = QSound("music.wav", self)
+        self.music_button = QPushButton("Включить музыку", self)
+        self.music_button.clicked.connect(self.sound.play)
+        self.music_button.move(450, 100)
 
 
 if __name__ == "__main__":
