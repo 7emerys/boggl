@@ -54,19 +54,16 @@ class MW(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        self.setStyleSheet("background-color: #79D6F4;")
+        self.setStyleSheet("background-color: #F5F5F5;")
         button_style = """
-                                QPushButton {
-                                    font-size: 18px;
-                                    border: 2px solid #8f8f8f;
-                                    border-radius: 10px;
-                                    padding: 10px;
-                                    background-color: #d7d7d7;
-                                }
-                                QPushButton:hover {
-                                    background-color: #7FB6C3;
-                                }
-                            """
+            font-weight:bold;
+            font-size: 15px;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            background-color: #2196F3;
+            color: white;
+                        """
 
 
         self.start_button.setStyleSheet(button_style)
@@ -96,61 +93,82 @@ class Wgame(QMainWindow):
         super().__init__()
         self.setWindowTitle("Боггл")
         self.setMinimumSize(800, 400)
-        self.setStyleSheet("background-color: #79D6F4;")
+        self.setStyleSheet("background-color: #F5F5F5;")
         button_style = """
-                                                               QPushButton {
-                                                                   font-size: 15px;
-                                                                   border: 2px solid #8f8f8f;
-                                                                   border-radius: 10px;
-                                                                   padding: 5px;
-                                                                   background-color: #d7d7d7;
-                                                               }
-                                                               QPushButton:hover {
-                                                                   background-color: #7FB6C3;
-                                                               }
-                                                           """
+            font-weight:bold;
+            font-size: 18px;
+            border: none;
+            border-radius: 15px;
+            padding: 6px;
+            background-color: #2196F3;
+            color: white;
+                        """
+        self.helping_btn = 0
+        self.used_words = []
+        self.score = 0
+        self.open_cur_words()
 
-        buttons_layout = QVBoxLayout()
-        matrix_layuot = QGridLayout()
+        matrix_layout = QGridLayout()
+        buttons_layout = QHBoxLayout()
+        buttons_layout2 = QVBoxLayout()
+        buttons_layout3 = QVBoxLayout()
 
-        self.del_button_layout = QVBoxLayout()
-        self.line_word = QVBoxLayout()
-        self.help_button_layout = QVBoxLayout()
-        self.back_button_layout = QVBoxLayout()
-        self.check_button_layout = QVBoxLayout()
+        self.label_score = QLabel(f"Счёт: ")
+        self.label_score.setStyleSheet("""
+                                    font-size: 15px;
+                                    padding: 10px;
+                                    font-weight:bold;
+                                    margin-bottom: 15px;
+                                    border: 1px solid lightgrey;
+                                    border-radius: 5px;
+                                """)
 
+        self.label_used_words = QLabel(f"Последнее слово: ")
+        self.label_used_words.setStyleSheet("""
+                                            font-size: 15px;
+                                            padding: 10px;
+                                            font-weight:bold;
+                                            margin-bottom: 15px;
+                                            border: 1px solid lightgrey;
+                                            border-radius: 5px;
+                                        """)
+
+        self.line_word = QLineEdit("")
+        self.line_word.setStyleSheet("""
+                            font-size: 15px;
+                            padding: 10px;
+                            font-weight:bold;
+                            margin-bottom: 15px;
+                            border: 1px solid lightgrey;
+                            border-radius: 5px;
+                        """)
 
         self.del_button = QPushButton("Удалить", self)
         self.del_button.clicked.connect(self.del_letter)
-        self.del_button.setFixedSize(100, 30)
-        self.del_button_layout.addWidget(self.del_button)
-
-        self.line_word = QLineEdit("")
+        self.del_button.setFixedSize(180, 40)
 
         self.back_button = QPushButton("Назад", self)
         self.back_button.clicked.connect(self.comeback)
-        self.back_button.setFixedSize(100, 30)
-        self.back_button_layout.addWidget(self.back_button)
+        self.back_button.setFixedSize(180, 40)
 
         self.help_button = QPushButton("Подсказка", self)
         self.help_button.clicked.connect(self.helping)
-        self.help_button.setFixedSize(100, 30)
-        self.help_button_layout.addWidget(self.help_button)
+        self.help_button.setFixedSize(180, 40)
 
         self.check_button = QPushButton("Проверить", self)
         self.check_button.clicked.connect(self.check_word)
-        self.check_button.setFixedSize(100, 30)
-        self.check_button_layout.addWidget(self.check_button)
+        self.check_button.setFixedSize(180, 40)
 
 
-        buttons_layout.addLayout(self.del_button_layout)
-        buttons_layout.addWidget(self.line_word)
-        buttons_layout.addLayout(self.check_button_layout)
-        buttons_layout.addLayout(self.help_button_layout)
-        buttons_layout.addLayout(self.back_button_layout)
+        buttons_layout.addWidget(self.del_button)
+        buttons_layout.addWidget(self.check_button)
+        buttons_layout.addWidget(self.help_button)
+        buttons_layout.addWidget(self.back_button)
 
 
+        buttons_layout2.addWidget(self.label_score)
         self.board = self.matrix()
+
 
         self.labels = []
         self.word = ''
@@ -159,14 +177,20 @@ class Wgame(QMainWindow):
                 btn = QPushButton(self.board[i][j])
                 btn.clicked.connect(self.btn_cl)
                 btn.setStyleSheet(button_style)
-                matrix_layuot.addWidget(btn, i, j)
+                matrix_layout.addWidget(btn, i, j)
                 self.labels.append(btn)
+
+
+        buttons_layout2.addLayout(matrix_layout)
+        buttons_layout2.addWidget(self.line_word)
+        buttons_layout3.addLayout(buttons_layout2)
+        buttons_layout3.addWidget(self.label_used_words)
 
 
         btn_matrix = QVBoxLayout()
 
 
-        btn_matrix.addLayout(matrix_layuot)
+        btn_matrix.addLayout(buttons_layout3)
         btn_matrix.addLayout(buttons_layout)
 
 
@@ -181,7 +205,7 @@ class Wgame(QMainWindow):
         self.check_button.setStyleSheet(button_style)
 
     def matrix(self):
-        letters = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я']
+        letters = [chr(i) for i in range(1040, 1072)]
         board = []
         row_letters = random.sample(letters, k = 16)
         for i in range(0, 16, 4):
@@ -198,11 +222,41 @@ class Wgame(QMainWindow):
         self.word = self.word[:-1]
         self.line_word.setText(self.word)
 
+    def open_cur_words(self):
+        with open('words.txt', 'r', encoding='utf-8') as self.wd:
+            self.current_words = []
+            self.current_words = self.wd.read().lower().split()
+
     def check_word(self):
-        pass
+        if self.current_words.count(str(self.word.lower())) == 1 and self.used_words.count(str(
+            self.word.upper())) == 0:
+            self.score += len(self.word)
+            self.used_words.append(self.word)
+            self.word = ''
+            self.label_used_words.setText(f"Последнее слово: {''.join(self.used_words[-1:])}")
+            self.label_score.setText(f"Счёт: {self.score}")
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Такого слова в словаре нет или оно уже было использовано!")
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
 
     def helping(self):
-        pass
+        if self.helping_btn <= 2:
+            self.rand_word = random.choice(self.current_words)
+            if self.rand_word not in self.used_words:
+                self.score += len(self.rand_word)
+                self.used_words.append(self.rand_word)
+                self.label_used_words.setText(f"Последнее слово: {self.rand_word.upper()}")
+                self.label_score.setText(f"Счёт: {self.score}")
+                self.helping_btn += 1
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("Ошибка")
+            msg.setText("Вы израсходовали подсказки!")
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
 
     def comeback(self):
         self.menu = MW()
@@ -238,19 +292,16 @@ class Rules(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        self.setStyleSheet("background-color: #79D6F4;")
+        self.setStyleSheet("background-color: #F5F5F5;")
         button_style = """
-                                                QPushButton {
-                                                    font-size: 15px;
-                                                    border: 2px solid #8f8f8f;
-                                                    border-radius: 10px;
-                                                    padding: 5px;
-                                                    background-color: #d7d7d7;
-                                                }
-                                                QPushButton:hover {
-                                                    background-color: #7FB6C3;
-                                                }
-                                            """
+            font-weight:bold;
+            font-size: 15px;
+            border: none;
+            border-radius: 15px;
+            padding: 6px;
+            background-color: #2196F3;
+            color: white;
+                        """
         self.back_button.setStyleSheet(button_style)
 
     def comeback(self):
@@ -276,17 +327,17 @@ class Sounds(QMainWindow):
         self.back_button_layout = QVBoxLayout()
         self.back_button = QPushButton("Назад", self)
         self.back_button.clicked.connect(self.comeback)
-        self.back_button.setFixedSize(150, 50)
+        self.back_button.setFixedSize(175, 50)
         self.back_button_layout.addWidget(self.back_button)
 
         self.music_play_button = QPushButton("Включить музыку", self)
         self.music_play_button.clicked.connect(self.sound_play)
-        self.music_play_button.setFixedSize(150, 50)
+        self.music_play_button.setFixedSize(175, 50)
         self.music_play_button_layout.addWidget(self.music_play_button)
 
         self.music_stop_button = QPushButton("Остановить музыку", self)
         self.music_stop_button.clicked.connect(self.sound_stop)
-        self.music_stop_button.setFixedSize(150, 50)
+        self.music_stop_button.setFixedSize(175, 50)
         self.music_stop_button_layout.addWidget(self.music_stop_button)
 
         layout.addLayout(self.music_play_button_layout)
@@ -300,19 +351,16 @@ class Sounds(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        self.setStyleSheet("background-color: #79D6F4;")
+        self.setStyleSheet("background-color: #F5F5F5;")
         button_style = """
-                                                    QPushButton {
-                                                        font-size: 15px;
-                                                        border: 2px solid #8f8f8f;
-                                                        border-radius: 10px;
-                                                        padding: 5px;
-                                                        background-color: #d7d7d7;
-                                                    }
-                                                    QPushButton:hover {
-                                                        background-color: #7FB6C3;
-                                                    }
-                                                """
+            font-weight:bold;
+            font-size: 15px;
+            border: none;
+            border-radius: 15px;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+                        """
         self.music_stop_button.setStyleSheet(button_style)
         self.music_play_button.setStyleSheet(button_style)
         self.back_button.setStyleSheet(button_style)
