@@ -1,5 +1,6 @@
 import sys
 import random
+import math
 from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtCore import *
@@ -113,6 +114,7 @@ class Wgame(QMainWindow):
         buttons_layout2 = QVBoxLayout()
         buttons_layout3 = QVBoxLayout()
 
+
         self.label_score = QLabel(f"Счёт: ")
         self.label_score.setStyleSheet("""
                                     font-size: 15px;
@@ -159,6 +161,19 @@ class Wgame(QMainWindow):
         self.check_button.clicked.connect(self.check_word)
         self.check_button.setFixedSize(180, 40)
 
+        self.label_timer = QLabel("90", self)
+        self.label_timer.setStyleSheet("""
+                                                            font-size: 25px;
+                                                            padding: 10px;
+                                                            font-weight:bold;
+                                                            margin-bottom: 15px;
+                                                            border: 1px solid lightgrey;
+                                                            border-radius: 5px;
+                                                        """)
+
+        self.timer = QTimer(self)
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.update_timer)
 
         buttons_layout.addWidget(self.del_button)
         buttons_layout.addWidget(self.check_button)
@@ -166,6 +181,7 @@ class Wgame(QMainWindow):
         buttons_layout.addWidget(self.back_button)
 
 
+        buttons_layout2.addWidget(self.label_timer)
         buttons_layout2.addWidget(self.label_score)
         self.board = self.matrix()
 
@@ -235,6 +251,7 @@ class Wgame(QMainWindow):
             self.word = ''
             self.label_used_words.setText(f"Последнее слово: {''.join(self.used_words[-1:])}")
             self.label_score.setText(f"Счёт: {self.score}")
+            self.timer.start()
         else:
             msg = QMessageBox()
             msg.setWindowTitle("Ошибка")
@@ -246,11 +263,12 @@ class Wgame(QMainWindow):
         if self.helping_btn <= 2:
             self.rand_word = random.choice(self.current_words)
             if self.rand_word not in self.used_words:
-                self.score += len(self.rand_word)
+                self.score += math.ceil(len(self.rand_word)*0.5)
                 self.used_words.append(self.rand_word)
                 self.label_used_words.setText(f"Последнее слово: {self.rand_word.upper()}")
                 self.label_score.setText(f"Счёт: {self.score}")
                 self.helping_btn += 1
+                self.timer.start()
         else:
             msg = QMessageBox()
             msg.setWindowTitle("Ошибка")
@@ -263,6 +281,25 @@ class Wgame(QMainWindow):
         self.menu.show()
         self.close()
 
+    def update_timer(self):
+        seconds = int(self.label_timer.text())
+        seconds -= 1
+        self.label_timer.setText(str(seconds))
+
+        if seconds == 0:
+            self.timer.stop()
+            self.game_over()
+
+    def game_over(self):
+        msg = QMessageBox()
+        msg.setWindowTitle("Конец")
+        msg.setText("Время вышло, пора подводить итоги!")
+        msg.setIcon(QMessageBox.Information)
+        msg.exec_()
+        self.game_window = Wgame()
+        self.game_window.show()
+        self.close()
+
 
 class Rules(QMainWindow):
     def __init__(self):
@@ -273,7 +310,7 @@ class Rules(QMainWindow):
         layout = QVBoxLayout()
 
         self.label = QLabel(
-            "Правила игры:\nВ начале выводится матрица 4*4, заполненная буквами русского алфавита.\nПользователь должен вписывать в поле ответа слово, состоящее из букв, которые есть в матрице.\nОчки зависят от длины и количества слов. За каждую букву начисляется 1 очко.\nВ игре есть кнопка подсказки слова, при нажатии на которую пользователю выводится подходящее слово.\nОчки за такое слово начисляются с коэффициентом 0,5, кнопка будет доступна 3 раза за 1 игру",
+            "Правила игры:\nВ начале выводится матрица 4*4, заполненная буквами русского алфавита.\nПользователь должен вписывать в поле ответа слово, состоящее из букв, которые есть в матрице.\nОчки зависят от длины и количества слов. За каждую букву начисляется 1 очко.\nВ игре есть кнопка подсказки слова, при нажатии на которую пользователю выводится случайное слово.\nОчки за такое слово начисляются с коэффициентом 0,5, кнопка будет доступна 3 раза за 1 игру",
             self)
         self.label.setStyleSheet("""
             font-size:20px;
