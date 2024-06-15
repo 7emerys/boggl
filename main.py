@@ -293,7 +293,7 @@ class Wgame(QMainWindow):
     def game_over(self):
         msg = QMessageBox()
         msg.setWindowTitle("Конец")
-        msg.setText("Время вышло, пора подводить итоги!")
+        msg.setText(f"Время вышло, ваш результат: {self.score}!")
         msg.setIcon(QMessageBox.Information)
         msg.exec_()
         self.game_window = Wgame()
