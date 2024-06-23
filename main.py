@@ -117,13 +117,13 @@ class Wgame(QMainWindow):
 
         self.label_score = QLabel(f"Счёт: ")
         self.label_score.setStyleSheet("""
-                                    font-size: 15px;
-                                    padding: 10px;
-                                    font-weight:bold;
-                                    margin-bottom: 15px;
-                                    border: 1px solid lightgrey;
-                                    border-radius: 5px;
-                                """)
+                                            font-size: 15px;
+                                            padding: 10px;
+                                            font-weight:bold;
+                                            margin-bottom: 15px;
+                                            border: 1px solid lightgrey;
+                                            border-radius: 5px;
+                                        """)
 
         self.label_used_words = QLabel(f"Последнее слово: ")
         self.label_used_words.setStyleSheet("""
@@ -137,13 +137,26 @@ class Wgame(QMainWindow):
 
         self.line_word = QLineEdit("")
         self.line_word.setStyleSheet("""
-                            font-size: 15px;
-                            padding: 10px;
-                            font-weight:bold;
-                            margin-bottom: 15px;
-                            border: 1px solid lightgrey;
-                            border-radius: 5px;
-                        """)
+                                            font-size: 15px;
+                                            padding: 10px;
+                                            font-weight:bold;
+                                            margin-bottom: 15px;
+                                            border: 1px solid lightgrey;
+                                            border-radius: 5px;
+                                        """)
+
+        self.label_timer = QLabel("90", self)
+        self.label_timer.setStyleSheet("""
+                                            font-size: 25px;
+                                            padding: 10px;
+                                            font-weight:bold;
+                                            margin-bottom: 15px;
+                                            border: 1px solid lightgrey;
+                                            border-radius: 5px;
+                                        """)
+        self.timer = QTimer(self)
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.update_timer)
 
         self.del_button = QPushButton("Удалить", self)
         self.del_button.clicked.connect(self.del_letter)
@@ -161,19 +174,9 @@ class Wgame(QMainWindow):
         self.check_button.clicked.connect(self.check_word)
         self.check_button.setFixedSize(180, 40)
 
-        self.label_timer = QLabel("90", self)
-        self.label_timer.setStyleSheet("""
-                                                            font-size: 25px;
-                                                            padding: 10px;
-                                                            font-weight:bold;
-                                                            margin-bottom: 15px;
-                                                            border: 1px solid lightgrey;
-                                                            border-radius: 5px;
-                                                        """)
 
-        self.timer = QTimer(self)
-        self.timer.setInterval(1000)
-        self.timer.timeout.connect(self.update_timer)
+
+
 
         buttons_layout.addWidget(self.del_button)
         buttons_layout.addWidget(self.check_button)
